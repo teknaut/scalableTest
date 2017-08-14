@@ -27,7 +27,7 @@ public class Target  {
         try {
             this.searchTerm = URLEncoder.encode(searchTerm, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "CANNOT USE GIVEN SEARCH TERM", e);
         }
     }
 
