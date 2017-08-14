@@ -8,17 +8,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Target implements Runnable {
+public class Target  {
 
-    private final StringBuilder SEARCH_URL = new StringBuilder("https://www.google.com/search");
-    private Logger LOG = Logger.getLogger(Target.class.getName());
-    private int PAGE_LIMIT = 10;
-
+    private final StringBuilder SEARCH_URL  = new StringBuilder("https://www.google.com/search");
+    private Logger LOG                      = Logger.getLogger(Target.class.getName());
+    private int PAGE_LIMIT                  = 10;
+    private Executor executor               = Executors.newCachedThreadPool();
     private final String searchTerm;
 
     public Target(String searchTerm) {
@@ -28,7 +30,6 @@ public class Target implements Runnable {
     /**
      * Execute the process
      */
-    @Override
     public void run() {
         System.out.println("PROCESSING PLEASE WAIT...... ");
         Map<String, Integer> finalResult    = new HashMap<>();
