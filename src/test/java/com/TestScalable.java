@@ -40,6 +40,10 @@ public class TestScalable {
         Assert.assertNotNull(html);
     }
 
+    /**
+     * I know this is no comprehensive test but demonstrates testing
+     * one aspect of the process
+     */
     @Test
     public void testScriptRegex(){
         Target target = new Target("test");
