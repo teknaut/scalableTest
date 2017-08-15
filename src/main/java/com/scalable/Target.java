@@ -41,15 +41,22 @@ public class Target  {
         Map<String, Integer> tmpMap;
         SEARCH_URL.append("?q=").append(searchTerm).append("&num=").append(PAGE_LIMIT);
 
-        StringBuilder intialResult = getHtml(SEARCH_URL.toString());
-        List<String> hrefs = getHrefsFromResult(intialResult);
+        try {
+            StringBuilder intialResult = getHtml(SEARCH_URL.toString()).get();
+            List<String> hrefs = getHrefsFromResult(intialResult);
 
-        StringBuilder html;
-        //iterate urls and merge a map of resulting script libs
-        for(String url : hrefs){
-            html    = getHtml(url);
-            tmpMap  = getScripts(html);
-            tmpMap.forEach((k, v) -> finalResult.merge(k, v, (v1, v2) -> v1 + v2));
+            StringBuilder html;
+            //iterate urls and merge a map of resulting script libs
+            for (String url : hrefs) {
+                html = getHtml(url).get();
+                tmpMap = getScripts(html);
+                tmpMap.forEach((k, v) -> finalResult.merge(k, v, (v1, v2) -> v1 + v2));
+            }
+        }
+        catch(Exception ex){
+            String err = "POSSIBLE INTERRUPTION IN REQUEST";
+            LOG.log(Level.WARNING, err, ex);
+            throw new IllegalStateException(err);
         }
 
         finalResult.entrySet().stream()
@@ -121,7 +128,7 @@ public class Target  {
      * @param PATH
      * @return
      */
-    public StringBuilder getHtml(String PATH){
+    public Future<StringBuilder> getHtml(String PATH){
 
         try {
 
@@ -152,7 +159,7 @@ public class Target  {
             };
 
             Future<StringBuilder> result = executor.submit(task);
-            return result.get();
+            return result;
         }
         catch(Exception ex){
             LOG.log(Level.WARNING, "PROBLEM MAKING CALL TO : " + PATH , ex);
